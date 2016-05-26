@@ -31,9 +31,6 @@ hastur() {
 }
 
 hastur:init() {
-    local progress_indicator=$1
-    shift
-
     printf "[hastur] cheking and initializing hastur... "
 
     mkdir -p $_hastur_root_dir
@@ -43,8 +40,7 @@ hastur:init() {
     local hastur_out
 
     if hastur_out=$(
-        hastur -p $_hastur_packages -S /usr/bin/true 2>&1 \
-            | progress:spinner:spin "$progress_indicator"
+        hastur -p $_hastur_packages -S /usr/bin/true 2>&1 | tee /dev/stderr
     )
     then
         printf "ok.\n"
