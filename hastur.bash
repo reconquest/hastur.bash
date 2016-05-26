@@ -35,7 +35,7 @@ hastur:init() {
 
     printf "[hastur] cheking and initializing hastur... "
 
-    mkdir -p $_hastur_root_dir
+    sudo mkdir -p $_hastur_root_dir
 
     _hastur_packages="$_hastur_packages,$packages"
 
