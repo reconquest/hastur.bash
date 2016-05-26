@@ -89,7 +89,7 @@ hastur:is-active() {
 }
 
 hastur:list() {
-    hastur -Qc | awk '{ print $1 }'
+    sudo:silent hastur -Qc | awk '{ print $1 }'
 }
 
 
