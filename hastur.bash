@@ -6,9 +6,13 @@ export _hastur_root_dir=${_hastur_root_dir:-/var/lib/hastur}
 
 export _hastur_packages=${_hastur_packages:-bash,coreutils,shadow}
 
+hastur() {
+    sudo hastur -q -r $_hastur_root_dir "${@}"
+}
+
 hastur:keep-containers() {
     hastur:destroy-containers() {
-        echo -n "containers are kept in $_hastur_root_dir... "
+        printf "containers are kept in $_hastur_root_dir... "
     }
 
     hastur:destroy-root() {
@@ -18,24 +22,22 @@ hastur:keep-containers() {
 
 hastur:keep-images() {
     hastur:destroy-root() {
-        echo -n "root is kept in $_hastur_root_dir... "
+        printf "root is kept in $_hastur_root_dir... "
     }
 }
 
 hastur:get-packages() {
-    echo $_hastur_packages
-}
-
-hastur() {
-    sudo hastur -q -r $_hastur_root_dir "${@}"
+    printf $_hastur_packages
 }
 
 hastur:init() {
+    local packages="$1"
+
     printf "[hastur] cheking and initializing hastur... "
 
     mkdir -p $_hastur_root_dir
 
-    _hastur_packages=$_hastur_packages",$1"
+    _hastur_packages="$_hastur_packages,$packages"
 
     local hastur_out
 
@@ -50,12 +52,21 @@ hastur:init() {
     fi
 }
 
-hastur:destroy-containers() {
-    hastur -Qc \
-        | awk '{ print $1 }' \
-        | while read container_name; do
-            hastur -f -D $container_name
-        done
+hastur:spawn() {
+    hastur -p $(hastur:get-packages) -kS "${@}"
+}
+
+hastur:run() {
+    local container_name="$1"
+    shift
+
+    hastur:spawn -n "$container_name" "${@}"
+}
+
+hastur:destroy() {
+    local container_name="$1"
+
+    hastur -f -D "$container_name"
 }
 
 hastur:destroy-root() {
@@ -65,19 +76,16 @@ hastur:destroy-root() {
 hastur:cleanup() {
     printf "Cleaning up hastur containers...\n"
 
-    hastur:destroy-containers
-
     hastur:destroy-root
 
     printf "ok.\n"
 }
 
 hastur:is-active() {
-    local container_name=$1
+    local container_name="$1"
     shift
 
-    hastur -q -r $_hastur_root_dir -Q "$container_name" --ip \
-        2>/dev/null >/dev/null
+    hastur -Q "$container_name" --ip 2>/dev/null >/dev/null
 }
 
 hastur:list() {
@@ -96,4 +104,3 @@ hastur:print-rootfs() {
 
     sudo:silent hastur -Q "$container_name" --rootfs
 }
-
