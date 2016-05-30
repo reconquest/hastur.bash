@@ -33,7 +33,7 @@ hastur:get-packages() {
 hastur:init() {
     local packages="$1"
 
-    printf "[hastur] cheking and initializing hastur... "
+    printf "[hastur] checking and initializing hastur... "
 
     sudo mkdir -p $_hastur_root_dir
 
