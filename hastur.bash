@@ -10,16 +10,6 @@ hastur() {
     sudo hastur -q -r $_hastur_root_dir "${@}"
 }
 
-hastur:keep-containers() {
-    hastur:destroy-containers() {
-        printf "containers are kept in $_hastur_root_dir... "
-    }
-
-    hastur:destroy-root() {
-        :
-    }
-}
-
 hastur:keep-images() {
     hastur:destroy-root() {
         printf "root is kept in $_hastur_root_dir... "
