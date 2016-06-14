@@ -1,5 +1,9 @@
-_base_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-source $_base_dir/vendor/github.com/reconquest/sudo.bash/sudo.bash
+if ! declare -f import:source &>/dev/null; then
+    _base_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+    source $_base_dir/vendor/github.com/reconquest/import.bash/import.bash
+fi
+
+import:source "github.com/reconquest/sudo.bash"
 
 # FIXME make it possible to specify non-system root dir
 export _hastur_root_dir=${_hastur_root_dir:-/var/lib/hastur}
