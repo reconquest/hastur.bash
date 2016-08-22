@@ -79,22 +79,21 @@ hastur:is-active() {
     local container_name="$1"
     shift
 
-    hastur -Q "$container_name" --ip 2>/dev/null >/dev/null
+    grep -vq 'inactive' <(hastur -Q "$container_name")
 }
 
 hastur:list() {
-    sudo:silent hastur -Qc | awk '{ print $1 }'
+    sudo:silent hastur -Q | awk '{ print $1 }'
 }
-
 
 hastur:print-ip() {
     local container_name="$1"
 
-    sudo:silent hastur -Q "$container_name" --ip | cut -f1 -d/
+    sudo:silent hastur -Q "$container_name" | awk '{print $3}' | cut -f1 -d/
 }
 
 hastur:print-rootfs() {
     local container_name="$1"
 
-    sudo:silent hastur -Q "$container_name" --rootfs
+    sudo:silent hastur -Q "$container_name" | awk '{print $4}'
 }
