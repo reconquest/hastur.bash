@@ -7,11 +7,11 @@ import:use "github.com/reconquest/sudo.bash"
 
 # FIXME make it possible to specify non-system root dir
 export _hastur_root_dir=${_hastur_root_dir:-/var/lib/hastur}
-export _hastur_bridge=${_hastur_bridge:-"br0:10.0.0.1/8"}
+export _hastur_bridge=${_hastur_bridge:-br0:10.0.0.1/8}
 export _hastur_packages=${_hastur_packages:-bash,coreutils,shadow}
 
 hastur() {
-    sudo hastur -b $_hastur_bridge -q -r $_hastur_root_dir "${@}"
+    sudo hastur -q -r $_hastur_root_dir "${@}"
 }
 
 hastur:keep-images() {
@@ -51,7 +51,7 @@ hastur:init() {
 }
 
 hastur:spawn() {
-    hastur -p $(hastur:get-packages) -kS "${@}"
+    hastur -b $_hastur_bridge -p $(hastur:get-packages) -kS "${@}"
 }
 
 hastur:run() {
